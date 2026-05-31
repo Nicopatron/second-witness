@@ -1,0 +1,9 @@
+# OS / editor cruft — never belongs in the repo
+.DS_Store
+*.swp
+*~
+Thumbs.db
+.idea/
+.vscode/
+__pycache__/
+*.pyc
