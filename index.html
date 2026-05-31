@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>second-witness — a due-diligence researcher for AI-tool decisions</title>
+  <meta name="description" content="A folder-based AI researcher for buy/build/adopt decisions on AI tools. It doesn't summarize the vendor's pitch — it goes and finds the second witness, then maps what's confirmed, what a pilot would settle, and what you won't know until production." />
+  <meta property="og:title" content="second-witness — go find the second witness" />
+  <meta property="og:description" content="A vendor's claim and an independent benchmark are two witnesses with opposite incentives. This researcher finds the second one." />
+  <meta property="og:type" content="website" />
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            mono: ['"SF Mono"', '"JetBrains Mono"', 'ui-monospace', 'SFMono-Regular', 'Menlo', 'monospace'],
+            sans: ['system-ui', '-apple-system', 'BlinkMacSystemFont', '"Segoe UI"', 'sans-serif'],
+          },
+          colors: {
+            paper: '#0f1115',
+            panel: '#161a21',
+            ink: '#e8eaed',
+            mute: '#8b93a1',
+            line: '#262c37',
+            accent: '#5eb0ef',
+            ok: '#6bbf8a',
+            warn: '#e0b15e',
+            stop: '#e07a7a',
+          },
+          maxWidth: { prose: '42rem' },
+        },
+      },
+    };
+  </script>
+
+  <style>
+    html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+    body { background-color: #0f1115; color: #e8eaed; font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+    .mono { font-family: "SF Mono", "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace; }
+    .hairline { border-top: 1px solid #262c37; }
+    .panel { background-color: #161a21; border: 1px solid #262c37; }
+  </style>
+</head>
+
+<body class="bg-paper text-ink antialiased">
+
+  <!-- =============== HERO =============== -->
+  <header class="px-6 pt-16 pb-12 md:pt-28 md:pb-16">
+    <div class="mx-auto max-w-prose">
+      <p class="text-mute text-sm tracking-wider uppercase mb-6 mono">A folder-based researcher for AI-tool due diligence</p>
+      <h1 class="text-3xl md:text-5xl leading-tight font-semibold mb-8">
+        A vendor's claim and an independent benchmark aren't two data points to average.
+        <span class="text-accent">They're two witnesses with opposite incentives.</span>
+      </h1>
+      <p class="text-xl md:text-2xl leading-relaxed text-ink/80">
+        So the researcher's job is to go find the <em>second</em> witness — then tell you exactly which parts of your decision still rest on only one.
+      </p>
+      <p class="text-mute text-base leading-relaxed mt-6">
+        Reading a vendor's landing page takes five minutes. Undoing the wrong vector DB with 8M vectors loaded takes weeks. <code class="mono text-sm bg-panel px-1.5 py-0.5 rounded border border-line">second-witness</code> exists to break that asymmetry. It is not a summarizer.
+      </p>
+    </div>
+  </header>
+
+  <!-- =============== HERO DEMO: run it on something you believe =============== -->
+  <section class="px-6 py-16 md:py-20 hairline">
+    <div class="mx-auto max-w-prose">
+      <p class="text-mute text-sm tracking-wider uppercase mb-4 mono">Run it on a number you already trust</p>
+      <h2 class="text-2xl md:text-3xl leading-tight font-semibold mb-10">
+        You've quoted a SWE-bench score. Here's the second witness.
+      </h2>
+
+      <div class="space-y-6">
+        <div>
+          <p class="text-mute text-xs tracking-wider uppercase mb-2 mono">You paste:</p>
+          <blockquote class="text-base md:text-lg leading-relaxed panel rounded-lg p-5 text-ink/90">
+            We're choosing an AI coding agent. The model we're leaning on reports low-80s% on SWE-bench Verified — that's our main capability signal. Good enough to standardize on?
+          </blockquote>
+        </div>
+
+        <div>
+          <p class="text-mute text-xs tracking-wider uppercase mb-2 mono">A summarizer repeats the score back. This returns:</p>
+          <div class="panel rounded-lg p-5 space-y-4 text-base leading-relaxed">
+            <p>Your decision rests on a number whose own author stopped trusting it. "Low-80s% on SWE-bench Verified" is <span class="text-warn mono">tier-3 / contaminated</span>: SWE-bench Verified is a static, public benchmark, and in 2026 that's the dominant failure mode — a high score can measure memorization, not capability.</p>
+            <p><span class="text-accent">Second witness:</span> OpenAI announced in Feb 2026 it would <em>stop reporting its scores on SWE-bench Verified</em>, citing contamination and flawed test cases. The contamination-resistant sibling — SWE-bench Pro (Scale, private + held-out repos) — scores the same frontier models dramatically lower. <em>That gap is the finding.</em> The leaderboard score you're leaning on is the first witness contradicting itself.</p>
+            <div class="mono text-sm space-y-1 border-l-2 border-line pl-4">
+              <p><span class="text-ok">verifiable</span> — check the model's standing on a contamination-resistant board (SWE-bench Pro, LiveCodeBench), not the static one</p>
+              <p><span class="text-warn">biddable</span> — capability on <em>your</em> code: a weekend eval on 20 real tasks from your own repo beats any public benchmark</p>
+              <p><span class="text-stop">unknowable</span> — how it does on the messy multi-file work the benchmark never contained</p>
+            </div>
+            <p><strong>Verdict:</strong> don't standardize on the Verified number — it's a witness that recanted. Run the 20-task eval on your own repo first; that's the only witness that settles your decision.</p>
+          </div>
+        </div>
+
+        <p class="text-mute text-base leading-relaxed">
+          Every claim above is real and dated — sourced in <code class="mono text-sm bg-panel px-1.5 py-0.5 rounded border border-line">reference/ai-specific-failure-modes-2026.md</code>, not asserted. A tool that preaches source-rigor cites its own.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- =============== BYLINE =============== -->
+  <section class="px-6 py-12 md:py-16 hairline">
+    <div class="mx-auto max-w-prose">
+      <p class="text-mute text-sm tracking-wider uppercase mb-4 mono">Built by</p>
+      <p class="text-lg md:text-xl leading-relaxed">
+        I'm Nicolás Patrón. I evaluate AI tooling for a consultancy and a family-holding AI build, and I've written the "should we adopt this" memo more than once — for vector DBs, RAG frameworks, model providers. I was wrong once, on a vendor benchmark that looked airtight until the production load test. That migration is why this folder exists.
+      </p>
+      <p class="text-lg md:text-xl leading-relaxed mt-4 text-ink/80">
+        It's the researcher I wish I'd had then. A folder of plain markdown — no install, no API key. You drop it into a Claude Project and Claude stops summarizing pitches and starts hunting witnesses.
+      </p>
+    </div>
+  </section>
+
+  <!-- =============== DEMO =============== -->
+  <section class="px-6 py-16 md:py-24 hairline">
+    <div class="mx-auto max-w-prose">
+      <p class="text-mute text-sm tracking-wider uppercase mb-4 mono">What you get back</p>
+      <h2 class="text-2xl md:text-3xl leading-tight font-semibold mb-10">
+        A map of certainty. Not a thumbs-up.
+      </h2>
+
+      <div class="space-y-6">
+        <div>
+          <p class="text-mute text-xs tracking-wider uppercase mb-2 mono">You paste:</p>
+          <blockquote class="text-base md:text-lg leading-relaxed panel rounded-lg p-5 text-ink/90">
+            Standardizing our retrieval on VectorDB-A. Site says sub-50ms p99 at 1M vectors. We filter heavily by tenant_id, loading ~8M, search path is a hard SLA.
+          </blockquote>
+        </div>
+
+        <div>
+          <p class="text-mute text-xs tracking-wider uppercase mb-2 mono">A summarizer says "yes, sub-50ms is great at that scale." This returns:</p>
+          <div class="panel rounded-lg p-5 space-y-4 text-base leading-relaxed">
+            <p>The headline claim and the claim your decision rests on are not the same. "Sub-50ms p99 at 1M" is <span class="text-warn mono">tier-3</span> — vendor sole witness — and it's at 1M while you're loading 8M, almost certainly unmeasured under tenant filtering, which is <em>your</em> condition.</p>
+            <p><span class="text-accent">Second witness:</span> the classic ANN suite (ann-benchmarks.com) measures <em>unfiltered</em> search — wrong witness. The filtered suites (VDBBench, Qdrant's filtered-search benchmark) are the right place; the literature says filter selectivity, not raw count, dominates the tail. I found <em>no</em> independent reproduction at 8M <em>with</em> tenant filtering on hardware like yours — that absence is the finding.</p>
+            <div class="mono text-sm space-y-1 border-l-2 border-line pl-4">
+              <p><span class="text-ok">verifiable</span> — architecture supports filtered search</p>
+              <p><span class="text-warn">biddable</span> — your real p99 at 8M+filter: a 1-week pilot on ~800k vectors settles it</p>
+              <p><span class="text-stop">unknowable</span> — behavior under sustained write load at peak</p>
+            </div>
+            <p><strong>Verdict:</strong> don't standardize on the vendor's 50ms. Run the filtered pilot first — days instead of a migration. Your decision rests almost entirely on the biddable claim.</p>
+          </div>
+        </div>
+
+        <p class="text-mute text-base leading-relaxed">
+          That difference — between reorganizing the input and going to find what the input left out — is the whole assignment.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- =============== METHOD =============== -->
+  <section class="px-6 py-16 md:py-24 hairline">
+    <div class="mx-auto max-w-prose">
+      <p class="text-mute text-sm tracking-wider uppercase mb-4 mono">The method</p>
+      <h2 class="text-2xl md:text-3xl leading-tight font-semibold mb-10">
+        Six moves on every claim.
+      </h2>
+
+      <div class="panel rounded-lg p-6 mono text-sm leading-relaxed text-ink/85 mb-10 overflow-x-auto">
+<pre>interrogate  → what decision? what breaks? your conditions?
+tier         → rank by witness (vendor = tier 3, sole, incentivized)
+hunt         → go find the second witness; report gaps too
+ground       → the variable that moves the number for <span class="text-accent">you</span>
+bucket       → verifiable-now / biddable / unknowable
+price        → confirm it · design the pilot · plan the abort</pre>
+      </div>
+
+      <div class="space-y-8">
+        <div>
+          <h3 class="text-lg font-semibold mb-2">It tiers by witness, not by volume</h3>
+          <p class="text-ink/75 leading-relaxed">Independent reproduction &gt; peer-context paper &gt; vendor docs &gt; marketing &gt; anecdote. The loudest source is not the highest tier. A claim with no witness but the vendor is held out of the verdict until a second one shows up.</p>
+        </div>
+        <div>
+          <h3 class="text-lg font-semibold mb-2">It hunts the AI-specific failure modes first</h3>
+          <p class="text-ink/75 leading-relaxed">Benchmark contamination (the dominant 2026 threat — a "SOTA" score on a leaked benchmark measures memory, not capability), effective-vs-nominal context, filter selectivity, and anything only an eval on your own data can settle. A generic vendor-eval skips exactly these.</p>
+        </div>
+        <div>
+          <h3 class="text-lg font-semibold mb-2">It prices the unknowable instead of faking it</h3>
+          <p class="text-ink/75 leading-relaxed">When a claim only resolves at 3am during a real outage, it says so and helps design the abort plan — rather than filling the gap with confident-sounding synthesis. Confidence never exceeds "moderate" on a vendor-sole-witness claim.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- =============== HOW TO USE =============== -->
+  <section class="px-6 py-16 md:py-24 hairline">
+    <div class="mx-auto max-w-prose">
+      <p class="text-mute text-sm tracking-wider uppercase mb-4 mono">Getting started</p>
+      <h2 class="text-2xl md:text-3xl leading-tight font-semibold mb-10">
+        Three paths.
+      </h2>
+
+      <div class="space-y-10">
+        <div>
+          <h3 class="text-lg font-semibold mb-2">A — 60-second cold test</h3>
+          <p class="text-ink/75 leading-relaxed">
+            In a <a class="underline decoration-mute hover:decoration-accent" href="https://claude.ai" target="_blank" rel="noopener">Claude Project</a> with the folder loaded, paste <em>"Should we use [any AI tool you know]?"</em> with no other context. If it asks what decision it's for instead of summarizing — it's working.
+          </p>
+        </div>
+        <div>
+          <h3 class="text-lg font-semibold mb-2">B — a real evaluation</h3>
+          <p class="text-ink/75 leading-relaxed">
+            Paste an actual claim you're weighing with your conditions (scale, constraints, what breaks if wrong). Get the bucketed map back. See <code class="mono text-sm bg-panel px-1.5 py-0.5 rounded border border-line">JUDGE_GUIDE.md</code> for five paste-ready tests (~10 min).
+          </p>
+        </div>
+        <div>
+          <h3 class="text-lg font-semibold mb-2">C — agent / CLI</h3>
+          <p class="text-ink/75 leading-relaxed">
+            The contract lives in <code class="mono text-sm bg-panel px-1.5 py-0.5 rounded border border-line">rules.md</code>; <code class="mono text-sm bg-panel px-1.5 py-0.5 rounded border border-line">AGENTS.md</code> points any agent runtime at the read order. Works with Claude, Codex, Cursor — any capable model that reads a folder.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- =============== FILE MAP =============== -->
+  <section class="px-6 py-16 md:py-24 hairline">
+    <div class="mx-auto max-w-prose">
+      <p class="text-mute text-sm tracking-wider uppercase mb-4 mono">What's in the folder</p>
+      <h2 class="text-2xl md:text-3xl leading-tight font-semibold mb-10">
+        The folder is the program.
+      </h2>
+
+      <pre class="mono text-sm leading-relaxed text-ink/85 overflow-x-auto panel rounded-lg p-6"><code>second-witness/
+&#9500;&#9472; identity.md      &mdash; who the researcher is, what decision it serves
+&#9500;&#9472; rules.md         &mdash; <span class="text-accent">how it researches</span>: the contract. Load-bearing.
+&#9500;&#9472; examples.md      &mdash; five worked exchanges; what good looks like
+&#9500;&#9472; reference/       &mdash; witness ladder, claims taxonomy, hype patterns,
+&#9474;                     question bank, workflow, 2026 AI failure modes
+&#9500;&#9472; identity-examples/  &mdash; three real buyer profiles
+&#9500;&#9472; JUDGE_GUIDE.md   &mdash; five paste-and-go tests (~10 min)
+&#9492;&#9472; README.md        &mdash; onboarding in under two minutes</code></pre>
+    </div>
+  </section>
+
+  <!-- =============== CTA =============== -->
+  <section class="px-6 py-20 md:py-28 hairline">
+    <div class="mx-auto max-w-prose">
+      <p class="text-mute text-sm tracking-wider uppercase mb-4 mono">Next</p>
+      <h2 class="text-2xl md:text-3xl leading-tight font-semibold mb-10">
+        Use it on your next adoption call.
+      </h2>
+
+      <div class="space-y-4">
+        <a id="cta-repo" href="#" target="_blank" rel="noopener"
+           class="block w-full py-4 px-6 bg-accent text-paper font-semibold text-lg text-center rounded-lg hover:bg-accent/90 transition-colors">
+          See the repo on GitHub
+        </a>
+      </div>
+
+      <p class="text-mute text-sm leading-relaxed mt-10 text-center">
+        It informs a decision — it doesn't make it, and it's never a substitute for testing a tool on your own workload before you commit.
+      </p>
+    </div>
+  </section>
+
+  <!-- =============== FOOTER =============== -->
+  <footer class="px-6 py-12 hairline">
+    <div class="mx-auto max-w-prose">
+      <p class="text-mute text-sm leading-relaxed">
+        Built by Nicolás Patrón, May 2026.
+        <span class="block mt-2">MIT licensed. Submission to <a class="underline decoration-mute hover:decoration-accent" href="https://www.skool.com/" target="_blank" rel="noopener">Clief Notes</a> Weekly Competition #6.</span>
+      </p>
+    </div>
+  </footer>
+
+  <!-- =============== RUNTIME LINK INJECTION =============== -->
+  <script>
+    // Live URL injected once the repo is confirmed.
+    var urls = {
+      repo: 'https://github.com/Nicopatron/second-witness'
+    };
+
+    function applyUrl(id, key, label) {
+      var el = document.getElementById(id);
+      if (!el) return;
+      var v = urls[key];
+      if (v && v.indexOf('__') !== 0) {
+        el.href = v;
+      } else {
+        el.setAttribute('href', '#');
+        el.setAttribute('aria-disabled', 'true');
+        el.classList.add('opacity-60', 'pointer-events-none');
+        el.textContent = label + ' (live by Sun)';
+      }
+    }
+
+    applyUrl('cta-repo', 'repo', 'See the repo on GitHub');
+  </script>
+</body>
+</html>
